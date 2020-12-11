@@ -45,7 +45,7 @@ const eyr = (input: string): boolean => {
 };
 
 const hgt = (input: string): boolean => {
-  if (!/\d*(in|cm)/.test(input)) {
+  if (!/^\d*(in|cm)$/.test(input)) {
     return false;
   }
 
@@ -97,18 +97,11 @@ const validPassports = values
   .map((item) => item.split(' '))
   .filter((item) => {
     let results: string[] = [];
-    let every = item.every((field) => {
+    return item.every((field) => {
       const [validator, value] = field.split(':');
       const callable = validators[validator];
       let result = callable(value);
       results.push(`${validator} return ${result} for ${value}`);
       return result;
     });
-    if (every) {
-      console.log(item);
-      console.log(results.join('\n'));
-      return every;
-    }
-  });
-
-console.log(validPassports.length);
+  }).length;
