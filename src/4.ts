@@ -4,7 +4,7 @@ import path from 'path';
 const rows = fs.readFileSync(path.join(__dirname, '../input/4.txt'));
 const values = rows.toString().split(`\n\n`);
 
-const northPole = ['cid'];
+const nonrequired = ['cid'];
 const fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'];
 
 /**
@@ -20,7 +20,11 @@ pid (Passport ID) - a nine-digit number, including leading zeroes.
 cid (Country ID) - ignored, missing or not.
  */
 
-const byr = (input: string): boolean => {
+interface Validator {
+  (input: string): boolean;
+}
+
+const byr: Validator = (input) => {
   if (!/\d{4}/.test(input)) {
     return false;
   }
@@ -28,7 +32,7 @@ const byr = (input: string): boolean => {
   return year >= 1920 && year <= 2002;
 };
 
-const iyr = (input: string): boolean => {
+const iyr: Validator = (input) => {
   if (!/\d{4}/.test(input)) {
     return false;
   }
@@ -36,7 +40,7 @@ const iyr = (input: string): boolean => {
   return year >= 2010 && year <= 2020;
 };
 
-const eyr = (input: string): boolean => {
+const eyr: Validator = (input) => {
   if (!/\d{4}/.test(input)) {
     return false;
   }
@@ -44,7 +48,7 @@ const eyr = (input: string): boolean => {
   return year >= 2020 && year <= 2030;
 };
 
-const hgt = (input: string): boolean => {
+const hgt: Validator = (input) => {
   if (!/^\d*(in|cm)$/.test(input)) {
     return false;
   }
@@ -64,23 +68,23 @@ const hgt = (input: string): boolean => {
   return false;
 };
 
-const hcl = (input: string): boolean => {
+const hcl: Validator = (input) => {
   return /#[0-9a-f]{6}/.test(input);
 };
 
-const ecl = (input: string): boolean => {
+const ecl: Validator = (input) => {
   return ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].some(
     (item) => item === input
   );
 };
 
-const pid = (input: string): boolean => {
+const pid: Validator = (input) => {
   return /^[0-9]{9}$/.test(input);
 };
 
-const cid = (_: string): boolean => true;
+const cid: Validator = (_) => true;
 
-let validators: { [key: string]: (input: string) => {} } = {
+let validators: { [key: string]: Validator } = {
   byr,
   iyr,
   eyr,
